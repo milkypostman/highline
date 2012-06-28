@@ -60,7 +60,7 @@ install the memoized function over the original function."
   (let ((rowfunc (intern (format "hl/arrow-row-%s" (symbol-name dir)))))
     `(defun ,(intern (format "hl/arrow-xpm-%s" (symbol-name dir))) (height color1 color2)
        (let* ((dots (/ height 2))
-              (width (ceiling height))
+              (width (ceiling height 2))
               (odd (not (= dots width))))
          (create-image
           (concat
@@ -76,7 +76,7 @@ static char * arrow_%s[] = {
            "\n"
            (mapconcat (lambda (d) (,rowfunc d width)) (number-sequence dots 1 -1) "\n")
            "};")
-          'xpm t :ascent 'center)))))
+          'xpm t :ascent 'center :width width)))))
 
 (memoize (hl/arrow-xpm left))
 (memoize (hl/arrow-xpm right))
@@ -285,7 +285,7 @@ static char * %s[] = {
      (let* ((color1 (if face1 (face-attribute face1 :background) "None"))
            (color2 (if face2 (face-attribute face2 :background) "None"))
            (image (,func (frame-char-height) color1 color2)))
-       (propertize (make-string (ceiling (length image) (frame-char-width)) ? )
+       (propertize (make-string (ceiling (plist-get (cdr image) :width) (frame-char-width)) ? )
                    'display image))))
 
 
