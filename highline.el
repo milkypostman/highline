@@ -60,8 +60,8 @@ install the memoized function over the original function."
   (let ((rowfunc (intern (format "hl/arrow-row-%s" (symbol-name dir)))))
     `(defun ,(intern (format "hl/arrow-xpm-%s" (symbol-name dir))) (height color1 color2)
        (let* ((dots (/ height 2))
-              (odd (= (mod height 2) 1))
-              (width (+ (if odd 1 0) dots 3)))
+              (width (ceiling height))
+              (odd (not (= dots width))))
          (create-image
           (concat
            (format "/* XPM */
