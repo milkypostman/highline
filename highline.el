@@ -289,8 +289,8 @@ static char * %s[] = {
      "%i")
    'local-map (make-mode-line-mouse-map
                'mouse-1 (lambda () (interactive)
-                          (setq powerline-buffer-size-suffix
-                                (not powerline-buffer-size-suffix))
+                          (setq highline-buffer-size-suffix
+                                (not highline-buffer-size-suffix))
                           (redraw-modeline)))))
 
 
