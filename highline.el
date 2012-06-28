@@ -1,7 +1,11 @@
 ;;; newline.el --- Rewrite of Powerline
 
-;;; Commentary:
-;;
+;; Copyright (c) 2011 Donald Ephraim Curtis
+
+;; Author: Donald Ephraim Curtis <dcurtis@milkbox.net>
+;; URL: http://github.com/milkypostman/highline
+;; Version: 1.0
+;; Keywords: mode-line
 
 ;;; Code:
 
@@ -273,7 +277,7 @@ static char * %s[] = {
 (defhlsep highline-arrow-left hl/arrow-xpm-left)
 (defhlsep highline-arrow-right hl/arrow-xpm-right)
 
-
+;;;###autoload
 (setq-default mode-line-format
               '("%e"
                 (:eval
