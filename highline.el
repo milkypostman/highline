@@ -11,16 +11,16 @@
 
 (defvar highline-buffer-size-suffix t)
 
-(defface highline-active1 '((t (:background "grey22"))) "Powerline face 1."
+(defface highline-active1 '((t (:background "grey22" :inherit mode-line))) "Powerline face 1."
   :group 'highline)
 
-(defface highline-active2 '((t (:background "grey40"))) "Powerline face 2."
+(defface highline-active2 '((t (:background "grey40" :inherit mode-line))) "Powerline face 2."
   :group 'highline)
 
-(defface highline-inactive1 '((t (:background "grey11"))) "Powerline face 1."
+(defface highline-inactive1 '((t (:background "grey11" :inherit mode-line))) "Powerline face 1."
   :group 'highline)
 
-(defface highline-inactive2 '((t (:background "grey20"))) "Powerline face 2."
+(defface highline-inactive2 '((t (:background "grey20" :inherit mode-line))) "Powerline face 2."
   :group 'highline)
 
 
