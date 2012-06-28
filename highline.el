@@ -344,7 +344,6 @@ static char * %s[] = {
                               (highline-raw global-mode-string face2 'r)
 
                               (highline-arrow-left face2 face1)
-                              (highline-raw " " face1)
 
                               (highline-raw "%4l" face1 'r)
                               (highline-raw ":" face1)
