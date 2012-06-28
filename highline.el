@@ -293,6 +293,9 @@ static char * %s[] = {
                                 (not highline-buffer-size-suffix))
                           (redraw-modeline)))))
 
+;;;###autoload
+(defhltext highline-buffer-id
+  (format-mode-line mode-line-buffer-identification))
 
 ;;;###autoload
 (defmacro defhlsep (name docstring &optional func)
@@ -326,7 +329,7 @@ static char * %s[] = {
                         (lhs (concat
                               (highline-raw "%*" nil 'l)
                               (highline-buffer-size nil 'l)
-                              (highline-raw "%12b" nil 'l)
+                              (highline-buffer-id nil 'l)
 
                               (highline-arrow-right nil face1)
 
