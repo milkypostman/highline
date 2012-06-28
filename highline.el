@@ -330,7 +330,7 @@ static char * %s[] = {
 
                               (highline-arrow-right nil face1)
 
-                              (highline-major-mode face1)
+                              (highline-major-mode face1 'l)
                               (highline-minor-modes face1 'l)
                               (highline-raw mode-line-process face1 'l)
 
