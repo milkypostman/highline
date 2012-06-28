@@ -1,4 +1,4 @@
-;;; newline.el --- Rewrite of Powerline
+;;; highline.el --- Rewrite of Powerline
 
 ;; Copyright (c) 2011 Donald Ephraim Curtis
 
@@ -324,4 +324,4 @@ static char * %s[] = {
 (provide 'highline)
 
 
-;;; newline.el ends here
+;;; highline.el ends here
