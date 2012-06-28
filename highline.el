@@ -136,6 +136,7 @@ static char * %s[] = {
 
 (memoize 'hl/percent-xpm)
 
+;;;###autoload
 (defun highline-hud (face1 face2)
   (let ((color1 (if face1 (face-attribute face1 :background) "None"))
         (color2 (if face2 (face-attribute face2 :background) "None"))
@@ -152,6 +153,7 @@ static char * %s[] = {
                 (hl/percent-xpm (frame-char-height) pmax pmin we ws 15 color1 color2))))
 
 
+;;;###autoload
 (defun highline-mouse (click-group click-type string)
   (cond ((eq click-group 'minor)
          (cond ((eq click-type 'menu)
@@ -172,6 +174,7 @@ static char * %s[] = {
             nil))))
 
 
+;;;###autoload
 (defun highline-concat (&rest strings)
   "Concatonate STRINGS and pad sides by spaces."
   (concat
@@ -179,6 +182,7 @@ static char * %s[] = {
    (mapconcat 'identity (delq nil strings) " ")
    " "))
 
+;;;###autoload
 (defmacro defhltext (name body)
   `(defun ,name
      (&optional face pad)
@@ -189,14 +193,16 @@ static char * %s[] = {
                     (when (and str (eq pad 'r)) " "))
                    'face face))))
 
-  (defun highline-raw (str &optional face pad)
-    (propertize  (concat
-                  (when (and str (eq pad 'l)) " ")
-                  str
-                  (when (and str (eq pad 'r)) " "))
-                 'face face))
+;;;###autoload
+(defun highline-raw (str &optional face pad)
+  (propertize  (concat
+                (when (and str (eq pad 'l)) " ")
+                str
+                (when (and str (eq pad 'r)) " "))
+               'face face))
 
 
+;;;###autoload
 (defun highline-fill (face reserve)
   (unless reserve
     (setq reserve 20))
@@ -205,6 +211,7 @@ static char * %s[] = {
   (propertize " " 'display `((space :align-to (- right-fringe ,reserve))) 'face face))
 
 
+;;;###autoload
 (defhltext highline-major-mode
   (propertize mode-name
               'help-echo "Major mode\n\ mouse-1: Display major mode menu\n\ mouse-2: Show help for major mode\n\ mouse-3: Toggle minor modes"
@@ -216,6 +223,7 @@ static char * %s[] = {
                            (define-key map [mode-line down-mouse-3] mode-line-mode-menu)
                            map)))
 
+;;;###autoload
 (defhltext highline-minor-modes
   (mapconcat (lambda (mm)
                (propertize mm
@@ -230,6 +238,7 @@ static char * %s[] = {
              (split-string (format-mode-line minor-mode-alist)) " "))
 
 
+;;;###autoload
 (defhltext highline-narrow
   (let (real-point-min real-point-max)
     (save-excursion
@@ -242,12 +251,15 @@ static char * %s[] = {
                   'help-echo "mouse-1: Remove narrowing from the current buffer"
                   'local-map (make-mode-line-mouse-map
                               'mouse-1 'mode-line-widen)))))
+
+;;;###autoload
 (defhltext highline-vc
   (when (and (buffer-file-name (current-buffer))
              vc-mode)
     (symbol-name (vc-mode-line (buffer-file-name (current-buffer))))))
 
 
+;;;###autoload
 (defhltext highline-buffer-size
   (propertize
    (if highline-buffer-size-suffix
@@ -260,6 +272,7 @@ static char * %s[] = {
                           (redraw-modeline)))))
 
 
+;;;###autoload
 (defmacro defhlsep (name docstring &optional func)
   "Create a function NAME with optional DOCSTRING that takes arguments FACE1, FACE2 and call FUNC with the background colors for those faces or \"None\"."
   (unless func
@@ -270,11 +283,14 @@ static char * %s[] = {
      ,docstring
      (let ((color1 (if face1 (face-attribute face1 :background) "None"))
            (color2 (if face2 (face-attribute face2 :background) "None")))
-           (propertize " " 'display
-                       (,func (frame-char-height) color1 color2)))))
+       (propertize " "
+                   'display (,func (frame-char-height) color1 color2)))))
 
 
+;;;###autoload
 (defhlsep highline-arrow-left hl/arrow-xpm-left)
+
+;;;###autoload
 (defhlsep highline-arrow-right hl/arrow-xpm-right)
 
 ;;;###autoload
@@ -296,8 +312,8 @@ static char * %s[] = {
                               (highline-raw mode-line-process face1 'l)
 
                               (highline-narrow face1 'l)
-                              (highline-raw " " face1)
 
+                              (highline-raw " " face1)
                               (highline-arrow-right face1 face2)
 
                               (highline-vc face2 'l)
