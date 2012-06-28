@@ -177,12 +177,20 @@ static char * %s[] = {
 
 (defmacro defhltext (name body)
   `(defun ,name
-     (&optional face)
+     (&optional face pad)
      (let ((str ,body))
-       (propertize (or str "") 'face face))))
+       (propertize (concat
+                    (when (and str (eq pad 'l)) " ")
+                    str
+                    (when (and str (eq pad 'r)) " "))
+                   'face face))))
 
-(defun highline-raw (str &optional face)
-     (propertize (or str "") 'face face))
+  (defun highline-raw (str &optional face pad)
+    (propertize  (concat
+                  (when (and str (eq pad 'l)) " ")
+                  str
+                  (when (and str (eq pad 'r)) " "))
+                 'face face))
 
 
 (defun highline-fill (face reserve)
@@ -273,37 +281,40 @@ static char * %s[] = {
                         (face1 (if active 'highline-active1 'highline-inactive1))
                         (face2 (if active 'highline-active2 'highline-inactive2))
                         (lhs (concat
-                              (highline-raw "%*")
-                              (highline-buffer-size)
-                              (highline-raw "%12b")
+                              (highline-raw "%*" nil 'l)
+                              (highline-buffer-size nil 'l)
+                              (highline-raw "%12b" nil 'l)
 
                               (highline-arrow-right nil face1)
 
-                              (highline-major-mode face1)
-                              (highline-minor-modes face1)
-                              (highline-raw mode-line-process face2)
+                              (highline-major-mode face1 'l)
+                              (highline-minor-modes face1 'l)
+                              (highline-raw mode-line-process face1 'l)
+
+                              (highline-narrow face1 'l)
+                              (highline-raw " " face1)
 
                               (highline-arrow-right face1 face2)
 
-                              (highline-narrow 'highline-active1)
-                              (highline-vc face2)
+                              (highline-vc face2 'l)
                               ))
                         (rhs (concat
-                              (highline-raw global-mode-string face2)
-                              (highline-arrow-left face2 face1)
+                              (highline-raw global-mode-string face2 'r)
 
-                              (highline-raw "%4l" face1)
+                              (highline-arrow-left face2 face1)
+                              (highline-raw " " face1)
+
+                              (highline-raw "%4l" face1 'r)
                               (highline-raw ":" face1)
-                              (highline-raw "%3c" face1)
+                              (highline-raw "%3c" face1 'r)
 
                               (highline-arrow-left face1 nil)
+                              (highline-raw " ")
 
-                              (highline-raw "%6p")
+                              (highline-raw "%6p" nil 'r)
 
-                              (highline-hud face2 nil)
-                              ))
-                        )
-                   (concat lhs (highline-fill face2 20) rhs)))))
+                              (highline-hud face2 face1))))
+                   (concat lhs (highline-fill face2 (1+ (length (format-mode-line rhs)))) rhs)))))
 
 
 (provide 'highline)
