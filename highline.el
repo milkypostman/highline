@@ -4,7 +4,7 @@
 
 ;; Author: Donald Ephraim Curtis <dcurtis@milkbox.net>
 ;; URL: http://github.com/milkypostman/highline
-;; Version: 1.0
+;; Version: 1.1
 ;; Keywords: mode-line
 
 ;;; Code:
@@ -122,14 +122,15 @@ static char * %s[] = {
   (let* ((height- (1- height))
          (fillstart (round (* height- (/ (float winstart) (float pmax)))))
          (fillend (round (* height- (/ (float winend) (float pmax)))))
+         (width- (- width 2))
          (data nil)
          (i 0))
     (while (< i height)
       (setq data (cons
                   (if (and (<= fillstart i)
                            (<= i fillend))
-                      (append (list 0) (make-list width 1) (list 0))
-                    (append (list 0) (make-list width 0) (list 0)))
+                      (append (list 0) (make-list width- 1) (list 0))
+                    (append (list 0) (make-list width- 0) (list 0)))
                   data))
       (setq i (+ i 1)))
     (hl/make-xpm "percent" color1 color2 (reverse data))))
@@ -150,7 +151,7 @@ static char * %s[] = {
       (setq pmin (point-min)))
     (propertize "  "
                 'display
-                (hl/percent-xpm (frame-char-height) pmax pmin we ws 15 color1 color2))))
+                (hl/percent-xpm (frame-char-height) pmax pmin we ws (* (frame-char-width) 2) color1 color2))))
 
 
 ;;;###autoload
@@ -281,10 +282,11 @@ static char * %s[] = {
   `(defun ,name
      (&optional face1 face2)
      ,docstring
-     (let ((color1 (if face1 (face-attribute face1 :background) "None"))
-           (color2 (if face2 (face-attribute face2 :background) "None")))
-       (propertize " "
-                   'display (,func (frame-char-height) color1 color2)))))
+     (let* ((color1 (if face1 (face-attribute face1 :background) "None"))
+           (color2 (if face2 (face-attribute face2 :background) "None"))
+           (image (,func (frame-char-height) color1 color2)))
+       (propertize (make-string (ceiling (length image) (frame-char-width)) ? )
+                   'display image))))
 
 
 ;;;###autoload
@@ -334,7 +336,7 @@ static char * %s[] = {
                               (highline-raw "%6p" nil 'r)
 
                               (highline-hud face2 face1))))
-                   (concat lhs (highline-fill face2 (1+ (length (format-mode-line rhs)))) rhs)))))
+                   (concat lhs (highline-fill face2 (length (format-mode-line rhs))) rhs)))))
 
 
 (provide 'highline)
