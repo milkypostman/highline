@@ -28,8 +28,8 @@ In essence, this extensions just provides functions that can be used in the `mod
                                   (highline-raw mode-line-process face1 'l)
     
                                   (highline-narrow face1 'l)
-                                  (highline-raw " " face1)
     
+                                  (highline-raw " " face1)
                                   (highline-arrow-right face1 face2)
     
                                   (highline-vc face2 'l)
@@ -50,7 +50,8 @@ In essence, this extensions just provides functions that can be used in the `mod
                                   (highline-raw "%6p" nil 'r)
     
                                   (highline-hud face2 face1))))
-                       (concat lhs (highline-fill face2 (1+ (length (format-mode-line rhs)))) rhs)))))
+                       (concat lhs (highline-fill face2 (length (format-mode-line rhs))) rhs)))))
+
                        
 The last line of this is what actually puts it all together.  But notice we pre-compile the `rhs` of the statusline and this allows us to more accurately right justify the text.  There are currently no other "separators", just the arrows.  I will be introducing more gradually.  This version should be easier to modify.
 
