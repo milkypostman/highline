@@ -278,7 +278,7 @@ static char * %s[] = {
 (defhltext highline-vc
   (when (and (buffer-file-name (current-buffer))
              vc-mode)
-    (symbol-name (vc-mode-line (buffer-file-name (current-buffer))))))
+    (format-mode-line '(vc-mode vc-mode))))
 
 
 ;;;###autoload
@@ -341,7 +341,7 @@ static char * %s[] = {
 
                               (highline-arrow-right face1 face2)
 
-                              (highline-vc face2 'l)
+                              (highline-vc face2)
                               ))
                         (rhs (concat
                               (highline-raw global-mode-string face2 'r)
