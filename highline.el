@@ -47,21 +47,42 @@ install the memoized function over the original function."
            (puthash ,args-sym (apply ,func ,args-sym) ,table-sym))))))
 
 
-(defun hl/arrow-row-right (dots width)
+(defun hl/arrow-row-right (dots width &optional left-pad right-pad)
   "Generate a string with DOTS dots and spaces to fill out WIDTH."
-  (concat "\"" (make-string dots ?.) (make-string (- width dots) ? ) "\","))
+  (unless left-pad (setq left-pad 0))
+  (unless right-pad (setq right-pad 0))
+  (concat "\""
+          (make-string left-pad ?.)
+          (make-string dots ?.)
+          (make-string (- width dots) ? )
+          (make-string right-pad ? )
+          "\","))
 
-(defun hl/arrow-row-left (dots width)
+(defun hl/arrow-row-left (dots width &optional left-pad right-pad)
   "Generate a string with DOTS dots and spaces to fill out WIDTH."
-  (concat "\"" (make-string (- width dots) ?.) (make-string dots ? ) "\","))
+  (unless left-pad (setq left-pad 0))
+  (unless right-pad (setq right-pad 0))
+  (concat "\""
+          (make-string left-pad ?.)
+          (make-string (- width dots) ?.)
+          (make-string dots ? )
+          (make-string right-pad ? )
+          "\","))
 
 (defmacro hl/arrow-xpm (dir)
   "Generate an arrow xpm function for DIR."
   (let ((rowfunc (intern (format "hl/arrow-row-%s" (symbol-name dir)))))
-    `(defun ,(intern (format "hl/arrow-xpm-%s" (symbol-name dir))) (height color1 color2)
+    `(defun ,(intern (format "hl/arrow-xpm-%s" (symbol-name dir))) (height color1 color2 &optional char-width)
+       (unless char-width (setq char-width (frame-char-width)))
        (let* ((dots (/ height 2))
               (width (ceiling height 2))
+              (total-width (* char-width (ceiling width char-width)))
+              (pad (- total-width width))
+              (left-pad (/ pad 2))
+              (right-pad (/ pad 2))
               (odd (not (= dots width))))
+         (if (eq ',dir 'left) (setq left-pad (1+ left-pad))
+           (setq right-pad (1+ right-pad)))
          (create-image
           (concat
            (format "/* XPM */
@@ -69,14 +90,14 @@ static char * arrow_%s[] = {
 \"%s %s 2 1\",
 \". c %s\",
 \"  c %s\",
-" (symbol-name ',dir) width height (or color1 "None") (or color2 "None"))
-           (mapconcat (lambda (d) (,rowfunc d width)) (number-sequence 1 dots) "\n")
+" (symbol-name ',dir) total-width height (or color1 "None") (or color2 "None"))
+           (mapconcat (lambda (d) (,rowfunc d width left-pad right-pad)) (number-sequence 1 dots) "\n")
            (and odd "\n")
-           (and odd (,rowfunc (+ dots 1) width))
+           (and odd (,rowfunc (+ dots 1) width left-pad right-pad))
            "\n"
-           (mapconcat (lambda (d) (,rowfunc d width)) (number-sequence dots 1 -1) "\n")
+           (mapconcat (lambda (d) (,rowfunc d width left-pad right-pad)) (number-sequence dots 1 -1) "\n")
            "};")
-          'xpm t :ascent 'center :width width)))))
+          'xpm t :ascent 'center :width total-width)))))
 
 (memoize (hl/arrow-xpm left))
 (memoize (hl/arrow-xpm right))
@@ -283,8 +304,8 @@ static char * %s[] = {
      (&optional face1 face2)
      ,docstring
      (let* ((color1 (if face1 (face-attribute face1 :background) "None"))
-           (color2 (if face2 (face-attribute face2 :background) "None"))
-           (image (,func (frame-char-height) color1 color2)))
+            (color2 (if face2 (face-attribute face2 :background) "None"))
+            (image (,func (frame-char-height) color1 color2 (frame-char-width))))
        (propertize (make-string (ceiling (plist-get (cdr image) :width) (frame-char-width)) ? )
                    'display image))))
 
@@ -309,13 +330,12 @@ static char * %s[] = {
 
                               (highline-arrow-right nil face1)
 
-                              (highline-major-mode face1 'l)
+                              (highline-major-mode face1)
                               (highline-minor-modes face1 'l)
                               (highline-raw mode-line-process face1 'l)
 
                               (highline-narrow face1 'l)
 
-                              (highline-raw " " face1)
                               (highline-arrow-right face1 face2)
 
                               (highline-vc face2 'l)
