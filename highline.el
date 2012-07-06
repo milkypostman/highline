@@ -158,7 +158,8 @@ static char * %s[] = {
 (memoize 'hl/percent-xpm)
 
 ;;;###autoload
-(defun highline-hud (face1 face2)
+(defun highline-hud (face1 face2 &optional width)
+  (unless width (setq width 2))
   (let ((color1 (if face1 (face-attribute face1 :background) "None"))
         (color2 (if face2 (face-attribute face2 :background) "None"))
         pmax
@@ -169,9 +170,9 @@ static char * %s[] = {
       (widen)
       (setq pmax (point-max))
       (setq pmin (point-min)))
-    (propertize "  "
+    (propertize (make-string width ? )
                 'display
-                (hl/percent-xpm (frame-char-height) pmax pmin we ws (* (frame-char-width) 2) color1 color2))))
+                (hl/percent-xpm (frame-char-height) pmax pmin we ws (* (frame-char-width) width) color1 color2))))
 
 
 ;;;###autoload
